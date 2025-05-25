@@ -125,7 +125,6 @@ namespace SortTestingLab
 
             while (left < right)
             {
-                // desc order
                 for (int i = left; i < right; i++)
                 {
                     if (array[i].CompareTo(array[i + 1]) < 0) // Зміна напряму сортування
@@ -291,11 +290,7 @@ namespace SortTestingLab
             }
         }
         // Метод для перевірки сортувань
-        static void VerifySorting<T>(
-            SortMethod<T> etalonMethod,
-            SortMethod<T> studentMethod,
-            Dictionary<string, T[]> testArrays,
-            TimeVerifier timeVerifier) where T : IComparable<T>
+        static void VerifySorting<T>(SortMethod<T> etalonMethod,SortMethod<T> studentMethod, Dictionary<string, T[]> testArrays, TimeVerifier timeVerifier) where T : IComparable<T>
         {
             foreach (var testCase in testArrays)
             {

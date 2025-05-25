@@ -1,49 +1,64 @@
 ﻿using System;
-
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Lab_1_2
 {
     class Timer
-    { 
+    {
         private readonly Action _action;
-        private readonly int _interval;
+        private readonly Random _random = new Random();
         private bool _running;
 
-        public Timer(Action action, int interval) 
+        public Timer(Action action)
         {
             _action = action;
-            _interval = interval;
         }
-        
-        public void Start() 
+
+        public void Start()
         {
             _running = true;
             Task.Run(() =>
             {
                 while (_running)
                 {
-                    _action();
-                    Thread.Sleep(_interval * 1000);
+                    int delay = _random.Next(1000, 5000);
+                    Thread.Sleep(delay);
+                    if (_running)
+                    {
+                        _action();
+                    }
                 }
             });
         }
+
         public void Stop() => _running = false;
+    }
 
-        class Program 
+    class Program
+    {
+        static void Main()
         {
-            static void Main()
+            Random rnd = new Random();
+            Timer[] timers = new Timer[]
             {
-                var timer1 = new Timer(() => Console.WriteLine($"[{DateTime.Now:T}] Таймер 1!"), 2);
-                var timer2 = new Timer(() => Console.WriteLine($"[{DateTime.Now:T}] Таймер 2!"), 3);
+                new Timer(() => Console.WriteLine($"[{DateTime.Now:T}] Таймер 1!")),
+                new Timer(() => Console.WriteLine($"[{DateTime.Now:T}] Таймер 2!")),
+                new Timer(() => Console.WriteLine($"[{DateTime.Now:T}] Таймер 3!"))
+            };
 
-                timer1.Start();
-                timer2.Start();
-
-                Thread.Sleep(10000);
-
-                timer1.Stop();
-                timer2.Stop();
+            for (int i = 0; i < 3; i++)
+            {
+                timers[rnd.Next(3)].Start();
             }
+
+            Thread.Sleep(20000);
+
+            foreach (var timer in timers)
+            {
+                timer.Stop();
+            }
+
         }
     }
 }
